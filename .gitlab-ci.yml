@@ -1,0 +1,25 @@
+deploy:
+
+    stage: deploy
+
+    tags:
+
+    - new-runner
+
+    image: ruby:2.3
+
+    script:
+
+    - apt-get update -qy
+
+    - apt-get install -y ruby-dev
+
+    - gem install dpl
+
+    - dpl --provider=heroku --app=$HEROKU_APPNAME --api-key=$HEROKU_APIKEY
+
+    only:
+
+    - Develop
+    - master
+    - release/v.1.0

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html 
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="https://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+	
+	<title>CSCI5308 - Group Formation Tool</title>
+</head>
+<body>
+	<div sec:authorize="isAuthenticated()">
+       <h4 th:inline="text">BannerID: [[${#httpServletRequest.remoteUser}]]</h4>
+       <form th:action="@{/logout}" method="post">
+           <input class="btn btn-primary" type="submit" value="Sign Out"/>
+       </form>
+	</div>	
+	<div sec:authorize="isAuthenticated()">
+    	<br> <a class="text-primary" th:href="@{/questionManager/questioncreation}"> Create Question </a> <br>
+	</div>		
+	<div>
+    	<form th:action="@{/questionManager/sortQuestions}">
+    		<br> <b> Sort questions by: </b>
+    		<select name="selectedSortOption" required>
+           		<option value="title"> Title </option>
+           		<option value="createdOn"> Creation Date </option>	
+           	</select>
+    		<button class="btn btn-primary" type="submit" value="sort" > Sort </button>
+       </form>	   
+	</div>
+	
+	<div th:if="${not #lists.isEmpty(questions)}">
+		<p> Available Questions: </p>
+  		<table class="table table-striped">
+			<tr th:each="question: ${questions}">
+				<form th:action="@{/questionManager/deleteQuestion(id=${question.id})}" method="post">
+					<td> <label th:text="${question.title}"> Title </label> </td>
+					<td> <button class="btn btn-primary" type="submit" value="delete" th:onclick="return confirm('Deleting a question will also delete already existing student responses to that question.\nAre you sure you want to continue and delete the question?');"> Delete </button> </td>
+				</form>
+			</tr>
+  		</table>
+	</div>
+		
+	<div th:unless="${not #lists.isEmpty(questions)}">
+		 <h4> <b> Currently there are no questions in the Question Bank. Please Click on the "Create Question" link to create Questions. </b> </h4>
+	</div>
+	
+</body>
+</html>

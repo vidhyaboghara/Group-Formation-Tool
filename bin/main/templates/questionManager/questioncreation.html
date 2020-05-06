@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html 
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="https://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+	<head>
+		<meta charset="utf-8">
+	    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+	
+		<title>CSCI5308 - Group Formation Tool</title>
+	</head>
+	<script>
+	function showChoices() {
+		var type = document.getElementById("questionType").value;
+	    if(type == "MCQ_one" || type == "MCQ_multiple"){
+	    	var choice = document.getElementById("choices");
+	    	var submitQuestion = document.getElementById("submitQuestion");
+	    	var moreChoice = document.getElementById('moreChoices');
+	    	var clickbutton = document.getElementById("clickbutton");
+	    	choice.style.display = "block";
+	    	moreChoice.style.display = "block";
+	    	submitQuestion.style.display = "block";
+	    	clickbutton.style.display = "none";
+	    }
+	    else{
+	    	var next = document.getElementById("nextButton");
+            next.type = "submit";
+	    }
+	}
+	function moreChoices() {
+		var choice = document.getElementById("moretextboxes");
+		var newtextbox ='<div><label> Displayed as :<input type ="text" name ="optionText"/></label><label>Stored as: <input type ="text" name ="optionCode"/></label></div>';
+	    document.getElementById('moretextboxes').innerHTML+=newtextbox;
+	    choice.style.display = "block";
+	}
+</script>
+<body>
+	<div sec:authorize="isAuthenticated()">
+	  <h4 th:inline="text">BannerID: [[${#httpServletRequest.remoteUser}]]</h4>
+	  	<form th:action="@{/logout}" method="post">
+	           <input class="btn btn-primary" type="submit" value="Sign Out"/>
+	  	</form>
+	</div>
+	
+	<div>
+	  	<h2> Basic Question Information</h2>
+	  	<form th:action="@{/questionManager/createquestion}" method="post">
+	  		<div><label> Title : <input type="text" name="title"/> </label></div>
+		    <div><label> Question: <input type="text" name="question"/> </label></div>
+		    <div><label> Type: <select id = "questionType" name="questionType">
+		    						<option value="Numeric">Numeric</option>
+		    						<option value="MCQ_one">Multiple Choice- Choose One</option>
+		    						<option value="MCQ_multiple">Multiple Choice- Choose Multiple</option>
+		    						<option value="Free_Text">Free Text</option>
+		    						</select> </label></div>
+		    <div id="clickbutton"><button id="nextButton" type="button" onclick="showChoices()">Next</button></div>
+		    <p>
+		    <div id="choices" style="display:none">
+			    <div><label> Displayed as :<input type ="text" name ="optionText"/></label>
+			    		<label> Stored as: <input type ="number" name ="optionCode"/></label></div>
+			    <div><label> Displayed as :<input type ="text" name ="optionText"/></label>
+			    		<label>Stored as: <input type ="number" name ="optionCode"/></label></div>
+			    <div><label> Displayed as :<input type ="text" name ="optionText"/></label>
+			    		<label>Stored as: <input type ="number" name ="optionCode"/></label></div>
+			    <div><label> Displayed as :<input type ="text" name ="optionText"/></label>
+			    		<label>Stored as: <input type ="number" name ="optionCode"/></label></div>
+		    </div>
+		    <div id="moretextboxes" style="display:none"></div>
+		    <div id="moreChoices" style="display:none"><button type ="button" onclick ="moreChoices()">More answers </button></div>
+			<div id="submitQuestion" style="display:none">
+				<button class="btn btn-primary" value="Submit">Submit</button>
+			</div>
+		</form>
+ 	</div>  
+	  
+</body>
+</html>

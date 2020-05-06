@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="https://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+	<head>
+		<meta charset="utf-8">
+	    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+	
+		<title>CSCI5308 - Group Formation Tool</title>
+	</head>
+	<body>
+	  	<div sec:authorize="isAuthenticated()">
+	       <h4 th:inline="text">BannerID: [[${#httpServletRequest.remoteUser}]]</h4>
+	       <form th:action="@{/logout}" method="post">
+	           <input class="btn btn-primary" type="submit" value="Sign Out"/>
+	       </form>
+		</div>
+		<h2 th:text="'Course: ' + ${course.title}">Course: Title Not Found</h2>
+		<br/>
+		<div th:if="${displayresults}">
+			<h3>Results of previous import:</h3>
+			<br/>
+			<div th:if="${successful}">
+				<h4>Successful</h4>
+				<br/>
+		  		<table class="table table-striped">
+					<tr th:each="msg : ${successful}">
+						<td>
+							<span th:text="${msg}"></span>
+						</td>
+					</tr>
+		  		</table>
+			</div>
+			<div th:if="${failures}">
+				<h4>Failures</h4>
+				<br/>
+		  		<table class="table table-striped">
+					<tr th:each="msg : ${failures}">
+						<td>
+							<span th:text="${msg}"></span>
+						</td>
+					</tr>
+		  		</table>
+		  		<br/>
+			</div>
+		</div>
+		<p>
+			This tool allows you to import and enroll students in the system by uploading a CSV
+			file (banner ID, first name, last name, email). Each student will have an account
+			created if they do not already exist in the system, and will be emailed with their
+			login credentials.
+		</p>
+		<form th:action="@{/course/uploadcsv(id=${course.id})}" method="post" enctype="multipart/form-data">
+			<label>File to upload:</label>
+			<input type="file" name="file">
+			<button class="btn btn-primary" type="submit">Upload CSV File</button>
+		</form>
+        <br/>
+		<a class="text-primary" th:href="@{/survey/editSurveyHome(courseId=${course.id})}">Edit Course Survey</a>
+		<div th:if="${instructor}">
+			<br/>
+			<a class="text-primary" th:href="@{/questionManager/questionManager}">Question Manager</a>
+			<br/>
+			<a class="text-primary" th:href="@{/course/enrollta(id=${course.id})}">Enroll TAs</a>
+		</div>
+	</body>
+</html>
